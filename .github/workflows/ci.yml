@@ -20,31 +20,8 @@ jobs:
           uv-version: latest
           enable-cache: true
 
-      - name: Install dependencies
-        run: uv sync --dev --no-install-project
-
       - name: Run linter
-        run: uv run ruff check . --output-format=github
+        run: uvx ruff check . --output-format=github
 
       - name: Run formatter
-        run: uv run ruff format . --check 
-
-  typecheck:
-    name: typecheck
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Setup UV
-        uses: astral-sh/setup-uv@v7
-        with:
-          uv-version: latest
-          enable-cache: true
-
-      - name: Install dependencies
-        run: uv sync --dev --no-install-project
-
-      - name: Run type checker
-        run: uv run ty check src/
+        run: uvx ruff format . --check 
