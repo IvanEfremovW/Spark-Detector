@@ -7,7 +7,9 @@ authors = [
     { name = "IvanEfremovW", email = "Ivan.EfremovWM@yandex.ru" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "numpy>=2.4.6",
+]
 
 [project.scripts]
 spark-detector = "spark_detector:main"
