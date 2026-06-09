@@ -1,5 +1,4 @@
-import os
-import sys
+from pathlib import Path
 import argparse
 
 from spark_detector.detector import YOLOSparkDetector
@@ -58,10 +57,13 @@ def parse_args():
 def main():
 
     args = parse_args()
-    
-    output_dir = os.path.dirname(os.path.abspath(args.output_path))
-    if output_dir:
-        os.makedirs(output_dir, exist_ok=True)
+
+    input_path = Path(args.input_path)
+    if not input_path.is_file():
+        raise FileNotFoundError(f"Входной файл не найден: '{input_path}'")
+
+    output_path = Path(args.output_path).resolve()
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
     preprocessor = None
     if args.use_preprocessor:
@@ -69,17 +71,18 @@ def main():
 
     detector = None
     if args.use_detector:
-        if not os.path.exists(args.model_path):
-            print(f"Модель не найдена: '{args.model_path}'")
-            sys.exit(1)
+        model_path = Path(args.model_path)
+
+        if not model_path.is_file():
+            raise FileNotFoundError(f"Модель не найдена: '{model_path}'")
 
         detector = YOLOSparkDetector(model_path=args.model_path)
 
     pipeline = VideoPipeline(detector=detector, preprocessor=preprocessor)
 
-    source = VideoFileSource(video_path=args.input_path)
+    source = VideoFileSource(video_path=input_path)
     output_handler = VideoFileOutput(
-        output_path=args.output_path,
+        output_path=output_path,
         fps=source.get_fps(),
         frame_size=source.get_frame_size(),
     )

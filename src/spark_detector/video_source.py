@@ -1,3 +1,4 @@
+from pathlib import Path
 from abc import ABC, abstractmethod
 from typing import Iterator
 from numpy.typing import NDArray
@@ -19,7 +20,7 @@ class BaseVideoSource(ABC):
 
 
 class VideoFileSource(BaseVideoSource):
-    def __init__(self, video_path: str):
+    def __init__(self, video_path: Path):
         self.video_path = video_path
         self.cap = cv2.VideoCapture(video_path)
 

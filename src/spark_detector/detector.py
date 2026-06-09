@@ -1,3 +1,4 @@
+from pathlib import Path
 from abc import ABC, abstractmethod
 import numpy as np
 from numpy.typing import NDArray
@@ -11,7 +12,7 @@ class BaseSparkDetector(ABC):
 
 
 class YOLOSparkDetector(BaseSparkDetector):
-    def __init__(self, model_path: str, device: int | str = "cuda"):
+    def __init__(self, model_path: Path, device: int | str = "cuda"):
         self.model = YOLO(model_path)
         self.device = device
 

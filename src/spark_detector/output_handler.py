@@ -1,3 +1,4 @@
+from pathlib import Path
 from abc import ABC, abstractmethod
 from numpy.typing import NDArray
 import cv2
@@ -14,7 +15,7 @@ class BaseOutputHandler(ABC):
 
 
 class VideoFileOutput(BaseOutputHandler):
-    def __init__(self, output_path: str, fps: float, frame_size: tuple):
+    def __init__(self, output_path: Path, fps: float, frame_size: tuple):
         self.output_path = output_path
         fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # ty: ignore[unresolved-attribute]
         self.writer = cv2.VideoWriter(output_path, fourcc, fps, frame_size)
