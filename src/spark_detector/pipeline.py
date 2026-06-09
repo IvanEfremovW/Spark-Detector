@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
-from .video_source import BaseVideoSource
-from .output_handler import BaseOutputHandler
-from .detector import BaseSparkDetector
+from spark_detector.video_source import BaseVideoSource
+from spark_detector.output_handler import BaseOutputHandler
+from spark_detector.detector import BaseSparkDetector
 
 
 class BasePipeline(ABC):
