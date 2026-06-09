@@ -6,6 +6,7 @@ from spark_detector.detector import YOLOSparkDetector
 from spark_detector.video_source import VideoFileSource
 from spark_detector.output_handler import VideoFileOutput
 from spark_detector.pipeline import VideoPipeline
+from spark_detector.preprocessing import MaskPreprocessor
 
 
 def parse_args():
@@ -16,30 +17,39 @@ def parse_args():
         "--input-path",
         type=str,
         required=True,
-        help="Путь к входному видеофайлу.",
+        help="Путь к входному видеофайлу",
     )
     parser.add_argument(
         "-o",
         "--output-path",
         type=str,
         required=True,
-        help="Путь для сохранения выходного видеофайла.",
+        help="Путь для сохранения выходного видеофайла",
+    )
+
+    parser.add_argument(
+        "--use-preprocessor",
+        type=bool,
+        default=False,
+        help="Использовать препроцессинг",
+    )
+
+    parser.add_argument(
+        "--use-detector", type=bool, default=True, help="Использовать детекцию"
     )
 
     parser.add_argument(
         "-m",
         "--model-path",
         type=str,
-        required=True,
-        default="models/yolov26s.pt",
-        help="Путь к весам модели YOLO (по умолчанию: 'models/yolov26s.pt').",
+        help="Путь к весам модели YOLO",
     )
 
     parser.add_argument(
         "--device",
         type=str,
         default="0",
-        help="'0' для GPU, 'cpu' для CPU (по умолчанию: '0').",
+        help="'0' для GPU, 'cpu' для CPU (по умолчанию: '0')",
     )
 
     return parser.parse_args()
@@ -48,18 +58,24 @@ def parse_args():
 def main():
 
     args = parse_args()
-
-    if not os.path.exists(args.input_path):
-        print(f"Входной файл не найден: '{args.input_path}'")
-        sys.exit(1)
-
+    
     output_dir = os.path.dirname(os.path.abspath(args.output_path))
     if output_dir:
         os.makedirs(output_dir, exist_ok=True)
 
-    detector = YOLOSparkDetector(model_path=args.model_path)
+    preprocessor = None
+    if args.use_preprocessor:
+        preprocessor = MaskPreprocessor()
 
-    pipeline = VideoPipeline(detector)
+    detector = None
+    if args.use_detector:
+        if not os.path.exists(args.model_path):
+            print(f"Модель не найдена: '{args.model_path}'")
+            sys.exit(1)
+
+        detector = YOLOSparkDetector(model_path=args.model_path)
+
+    pipeline = VideoPipeline(detector=detector, preprocessor=preprocessor)
 
     source = VideoFileSource(video_path=args.input_path)
     output_handler = VideoFileOutput(
