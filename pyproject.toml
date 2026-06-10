@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "IvanEfremovW", email = "Ivan.EfremovWM@yandex.ru" }
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.4.6",
     "opencv-python>=4.13.0.92",
@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-spark-detector = "spark_detector:main"
+spark-detector = "spark_detector.main:main"
 
 [build-system]
 requires = ["uv_build>=0.11.19,<0.12.0"]
